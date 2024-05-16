@@ -359,13 +359,18 @@ int integer(struct node_t *p)
 
 void free_node(struct node_t *p)
 {
-	for (int i = 0; i < p->m + 1; i++) {
-		free(p->a[i]);
+	if (!p->a==NULL){
+		for (int i = 0; i < p->m; i++) {
+			free(p->a[i]);
+		}
+		free(p->a);
 	}
-	free(p->a);
-	free(p->b);
-	free(p->c);
-	free(p->x);
+	if (!p->b==NULL)
+		free(p->b);
+	if (!p->c==NULL)
+		free(p->c);
+	if (!p->x==NULL)
+		free(p->x);
 	free(p->min);
 	free(p->max);
 	free(p);
@@ -381,6 +386,7 @@ void bound(struct node_t *p, struct set_t *h, double *zp, double *x, int n)
 		for (i = 0; i < h->size; i++) {
 			if (h->nodes[i]->z < p->z) {
 				free_node(h->nodes[i]);
+				//free(h->nodes[i]);
 				for (int j = i; j<h->size-1; j++)
 					h->nodes[j] = h->nodes[j+1];
 				pop(h);
@@ -411,6 +417,10 @@ int branch(struct node_t *q, double z) {
 			free(q->b);
 			free(q->c);
 			free(q->x);
+			q->a = NULL;
+			q->b = NULL;
+			q->c = NULL;
+			q->x = NULL;
 			return 1;
 		}
 	}
@@ -426,14 +436,15 @@ void succ(struct node_t *p, struct set_t *h, int m, int n, double **a, double *b
 		if(integer(q)){
 			bound(q, h, zp, x, n);
 		} else if (branch(q, *zp)) {
-			struct node_t **new_array = calloc(h->size + 1, sizeof(struct node_t*));
-			for (int i = 0; i<h->size; i++) {
-				new_array[i] = h->nodes[i];
+			h->size++;
+			struct node_t **new_array = calloc(h->size, sizeof(struct node_t*));
+			for (int i = 1; i<h->size; i++) {
+				new_array[i] = h->nodes[i-1];
 			}
-			new_array[h->size] = q;
+			new_array[0] = q;
 			//free(h->nodes);
 			h->nodes = new_array;
-			h->size++;
+			//free(new_array);
 			return;
 		}
 	}
@@ -461,7 +472,7 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x) {
 		struct node_t *q = h.nodes[h.size-1];
 		succ(q, &h, m, n, a, b, c, q->h, 1, floor(q->xh), &z, x);
 		succ(q, &h, m, n, a, b, c, q->h, -1, -ceil(q->xh), &z, x);
-		// free(q);
+		free_node(q);
 		pop(&h);
 	}
 	if (z == -INFINITY)
@@ -474,8 +485,8 @@ void pop(struct set_t *h)
 {
 	h->size--;
 	if(h->size>0){
-		free(h->nodes[0]);
-		h->nodes += sizeof(struct node_t *);
+		//free(h->nodes[0]);
+		//h->nodes += sizeof(struct node_t *);
 		struct node_t **temp = realloc(h->nodes, h->size * sizeof(struct node_t*));
 		h->nodes = temp;
 	}else
