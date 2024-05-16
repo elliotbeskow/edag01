@@ -32,7 +32,7 @@ int init(struct simplex_t *s, int m, int n, double **a, double *b, double *c, do
         s->var = var; 
         if (s->var == NULL)
         {
-                s->var = malloc((m+n)*sizeof(int));
+                s->var = malloc((m+n+1)*sizeof(int));
                 for (i = 0; i<m+n; i++)
                         s->var[i] = i;
         }
@@ -67,7 +67,7 @@ void pivot(struct simplex_t *s, int row, int col)
                 if (i != col)
                         c[i] = c[i] - c[col] * a[row][i] / a[row][col];
         c[col] = -c[col]/a[row][col];
-        for (i=0; i < n; i = i + 1)
+        for (i=0; i < m; i = i + 1)
                 if (i != row)
                         b[i] = b[i] - a[i][col] * b[row] / a[row][col];
         for (i = 0; i < m; i = i + 1)
