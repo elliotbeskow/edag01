@@ -386,10 +386,11 @@ void bound(struct node_t *p, struct set_t *h, double *zp, double *x, int n)
 		for (i = 0; i < h->size; i++) {
 			if (h->nodes[i]->z < p->z) {
 				free_node(h->nodes[i]);
-				//free(h->nodes[i]);
 				for (int j = i; j<h->size-1; j++)
 					h->nodes[j] = h->nodes[j+1];
-				pop(h);
+        h->size--;
+        h->nodes = realloc(h->nodes, h-> size * sizeof(struct node_t *));
+				//free(h->nodes[h->size]);
 			} 
 		}
 	}
@@ -470,9 +471,14 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x) {
 	while (h.size) {
 		printf("z = %lf \n", z);
 		struct node_t *q = h.nodes[h.size-1];
+    h.size--;
+    if (h.size > 0) {
+      h.nodes = realloc(h.nodes, h. size * sizeof(struct node_t *));
+    }
+    
 		succ(q, &h, m, n, a, b, c, q->h, 1, floor(q->xh), &z, x);
 		succ(q, &h, m, n, a, b, c, q->h, -1, -ceil(q->xh), &z, x);
-		pop(&h);
+    free_node(q);
 	}
 	if (z == -INFINITY)
 		return NAN;

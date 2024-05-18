@@ -12,7 +12,7 @@ OBJS	= intopt.o main.o error.o
 main: $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS)
 	rm -f score
-	./a.out -t 4
+	./a.out
 
 clean:
 	rm -f *.o a.out

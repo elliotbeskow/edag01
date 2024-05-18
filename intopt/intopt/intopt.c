@@ -359,17 +359,17 @@ int integer(struct node_t *p)
 
 void free_node(struct node_t *p)
 {
-	if (!p->a==NULL){
-		for (int i = 0; i < p->m; i++) {
+	if (p->a!=NULL){
+		for (int i = 0; i < p->m+1; i++) {
 			free(p->a[i]);
 		}
 		free(p->a);
 	}
-	if (!p->b==NULL)
+	if (p->b!=NULL)
 		free(p->b);
-	if (!p->c==NULL)
+	if (p->c!=NULL)
 		free(p->c);
-	if (!p->x==NULL)
+	if (p->x!=NULL)
 		free(p->x);
 	free(p->min);
 	free(p->max);
@@ -386,10 +386,11 @@ void bound(struct node_t *p, struct set_t *h, double *zp, double *x, int n)
 		for (i = 0; i < h->size; i++) {
 			if (h->nodes[i]->z < p->z) {
 				free_node(h->nodes[i]);
-				//free(h->nodes[i]);
 				for (int j = i; j<h->size-1; j++)
 					h->nodes[j] = h->nodes[j+1];
-				pop(h);
+        h->size--;
+        h->nodes = realloc(h->nodes, h-> size * sizeof(struct node_t *));
+				//free(h->nodes[h->size]);
 			} 
 		}
 	}
@@ -456,7 +457,6 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x) {
 	struct node_t *p = initial_node(m, n, a, b, c);
 	struct set_t h = {1,&p};
 	double z = -INFINITY;
-	printf("m=%d, n=%d\n", m ,n); 
 	p->z = simplex(p->m, p->n, p->a, p->b, p->c, p->x, 0);
 	if (integer(p) || !isfinite(p->z)) {
 		z = p->z;
@@ -469,12 +469,16 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x) {
 	}
 	branch(p, z);
 	while (h.size) {
-		printf("z = %lf \n", z);
+		//printf("z = %lf \n", z);
 		struct node_t *q = h.nodes[h.size-1];
+    h.size--;
+    if (h.size > 0) {
+      h.nodes = realloc(h.nodes, h. size * sizeof(struct node_t *));
+    }
+    
 		succ(q, &h, m, n, a, b, c, q->h, 1, floor(q->xh), &z, x);
 		succ(q, &h, m, n, a, b, c, q->h, -1, -ceil(q->xh), &z, x);
-		free_node(q);
-		pop(&h);
+    free_node(q);
 	}
 	if (z == -INFINITY)
 		return NAN;
@@ -488,10 +492,10 @@ void pop(struct set_t *h)
 	if(h->size>0){
 		//free(h->nodes[0]);
 		//h->nodes += sizeof(struct node_t *);
+		free_node(h->nodes[h->size]);
 		struct node_t **temp = realloc(h->nodes, h->size * sizeof(struct node_t*));
 		h->nodes = temp;
 	}else
-		free(h->nodes);
+		free_node(h->nodes[0]);
 	//free(h->nodes);
 }
-

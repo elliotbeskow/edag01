@@ -42,7 +42,7 @@ static void cd(char* dir)
 {
 	if (chdir(dir) < 0)
 		error("cd to \"%s\" failed\n", dir);
-	printf("cd \"%s\"", dir);
+	//printf("cd \"%s\"", dir);
 }
 
 static void check(void)
