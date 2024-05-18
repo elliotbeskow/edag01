@@ -456,6 +456,7 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x) {
 	struct node_t *p = initial_node(m, n, a, b, c);
 	struct set_t h = {1,&p};
 	double z = -INFINITY;
+	printf("m=%d, n=%d\n", m ,n); 
 	p->z = simplex(p->m, p->n, p->a, p->b, p->c, p->x, 0);
 	if (integer(p) || !isfinite(p->z)) {
 		z = p->z;

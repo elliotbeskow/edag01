@@ -41,7 +41,8 @@ static void timeout(int s)
 static void cd(char* dir)
 {
 	if (chdir(dir) < 0)
-		error("cd to \"%s\" failed", dir);
+		error("cd to \"%s\" failed\n", dir);
+	printf("cd \"%s\"", dir);
 }
 
 static void check(void)

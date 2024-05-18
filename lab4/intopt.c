@@ -359,17 +359,17 @@ int integer(struct node_t *p)
 
 void free_node(struct node_t *p)
 {
-	if (!p->a==NULL){
-		for (int i = 0; i < p->m; i++) {
+	if (p->a!=NULL){
+		for (int i = 0; i < p->m+1; i++) {
 			free(p->a[i]);
 		}
 		free(p->a);
 	}
-	if (!p->b==NULL)
+	if (p->b!=NULL)
 		free(p->b);
-	if (!p->c==NULL)
+	if (p->c!=NULL)
 		free(p->c);
-	if (!p->x==NULL)
+	if (p->x!=NULL)
 		free(p->x);
 	free(p->min);
 	free(p->max);
@@ -472,7 +472,6 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x) {
 		struct node_t *q = h.nodes[h.size-1];
 		succ(q, &h, m, n, a, b, c, q->h, 1, floor(q->xh), &z, x);
 		succ(q, &h, m, n, a, b, c, q->h, -1, -ceil(q->xh), &z, x);
-		free_node(q);
 		pop(&h);
 	}
 	if (z == -INFINITY)
@@ -487,10 +486,11 @@ void pop(struct set_t *h)
 	if(h->size>0){
 		//free(h->nodes[0]);
 		//h->nodes += sizeof(struct node_t *);
+		free_node(h->nodes[h->size]);
 		struct node_t **temp = realloc(h->nodes, h->size * sizeof(struct node_t*));
 		h->nodes = temp;
 	}else
-		free(h->nodes);
+		free_node(h->nodes[0]);
 	//free(h->nodes);
 }
 
