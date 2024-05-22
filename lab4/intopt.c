@@ -96,7 +96,7 @@ void pivot(struct simplex_t *s, int row, int col)
 	for (i=0; i < m; i = i + 1)
 		if (i != row)
 			b[i] = b[i] - a[i][col] * b[row] / a[row][col];
-	for (i = 0; i < m; i = i + 1)
+	for (i = 0; i < m; i++)
 		if (i != row)
 			for (j = 0; j < n; j++)
 				if (j != col)
@@ -469,7 +469,7 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x) {
 	}
 	branch(p, z);
 	while (h.size) {
-		printf("z = %lf \n", z);
+		//printf("z = %lf \n", z);
 		struct node_t *q = h.nodes[h.size-1];
     h.size--;
     if (h.size > 0) {
@@ -484,20 +484,6 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x) {
 		return NAN;
 	else
 		return z;
-}
-
-void pop(struct set_t *h) 
-{
-	h->size--;
-	if(h->size>0){
-		//free(h->nodes[0]);
-		//h->nodes += sizeof(struct node_t *);
-		free_node(h->nodes[h->size]);
-		struct node_t **temp = realloc(h->nodes, h->size * sizeof(struct node_t*));
-		h->nodes = temp;
-	}else
-		free_node(h->nodes[0]);
-	//free(h->nodes);
 }
 
 int main(void)
