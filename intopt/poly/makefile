@@ -1,5 +1,5 @@
 CC	= cc
-CFLAGS	= -std=c11 -pedantic -Wall -Werror -g -O3 -funsigned-char
+CFLAGS	= -std=c11 -pedantic -Wall -Werror -g -O0 -funsigned-char
 OUT	= a.out
 FILE	= poly
 
@@ -8,7 +8,7 @@ execute: compile
 	diff output correct
 
 compile: clean $(FILE).o malloc.o main.o
-	$(CC) $(CFLAGS) -o $(OUT) $(FILE).o malloc.o main.o
+	$(CC) $(CFLAGS) -o $(OUT) $(FILE).o malloc.o main.o -lm
 
 $(FILE).o: $(FILE).c
 	$(CC) -include wecc.h -c $(FILE).c $(CFLAGS)
