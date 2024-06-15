@@ -112,27 +112,49 @@ void free_poly(poly_t* p) {
 // 		}
 // }
 
+int compare_ints(const void* a, const void* b) {
+    return (*(int*)b - *(int*)a);
+}
+
 poly_t* mul(poly_t* p, poly_t* q) {
 	int i = 0, j = 0, k = 0, l;
- 	int size = p->size * q->size; // max size
- 	int* coefficients = calloc(size, sizeof(int));
- 	int* exponents = calloc(size, sizeof(int));
-	int coefficient, exponent;
-	while (i<p->size || j<q->size) {
-		exponent = p->exponents[k] + q->exponents[k];
-		coefficient = p->coefficients[k] * q->coefficients[k];
-		for (l=0; l<k; l++) {
-			if (exponents[l] == exponent) {
-				k = l;
-				break;
+ 	int max_size = p->size * q->size; // max size
+ 	int* exponents = calloc(max_size, sizeof(int));
+	int exponent;
+	for (i=0; i<p->size; i++) {
+		for (j=0;j<q->size; j++) {
+			exponent = p->exponents[i] + q->exponents[j];
+			int seen = 0;
+			for (l=0; l<k; l++) {
+				if (exponents[l] == exponent) {
+					seen = 1;
+					break;
+				}
+			}
+			if (!seen) {
+				exponents[k] = exponent;
+				k++;
 			}
 		}
-		exponents[k] = exponent;
-		coefficients[k] += coefficient;
-		if (j<=i)
-			j++;
-		else
-			i++;
+	}
+	int size = k;
+	i = 0, j = 0, k = 0;
+	exponents = realloc(exponents, size * sizeof(int));
+	qsort(exponents, size, sizeof(int), compare_ints);
+ 	int* coefficients = calloc(size, sizeof(int));
+	int coefficient;
+	for (i=0; i<p->size; i++) {
+		for (j=0; j<q->size; j++) {
+			exponent = p->exponents[i] + q->exponents[j];
+			coefficient = p->coefficients[i] * q->coefficients[j];
+			for (l=0; l<size; l++) {
+				if (exponents[l] == exponent) {
+					k = l;
+					break;
+				}
+			}
+			coefficients[k] += coefficient;
+		}
 	}
  	poly_t* r = malloc(sizeof(poly_t));
  	r->coefficients = coefficients;
