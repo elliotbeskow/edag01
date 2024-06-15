@@ -1,0 +1,11 @@
+Begin polynomial test of (x^2 - 7x + 1) * (3x + 2)
+x^2 - 7x + 1
+3x + 2
+18x^3
+End polynomial test of (x^2 - 7x + 1) * (3x + 2)
+
+Begin polynomial test of (x^10000000 + 2) * (2x^2 + 3x + 4)
+x^10000000 + 2
+2x^2 + 3x + 4
+10x^10000002
+End polynomial test of (x^10000000 + 2) * (2x^2 + 3x + 4)

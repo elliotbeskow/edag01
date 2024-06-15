@@ -110,21 +110,35 @@ void free_poly(poly_t* p) {
 // 			exponents[k] = exponent;
 // 			coefficients[k] += coefficient;
 // 		}
-// 	poly_t* p = malloc(sizeof(poly_t));
-// 	p->coefficients = coefficients;
-// 	p->exponents = exponents;
-// 	p->size = size;
-// 	return p;
 // }
 
 poly_t* mul(poly_t* p, poly_t* q) {
-	int i, j, k;
-	k = 0;
-	for (i=0; i<p->size, i++) {
-		for (j=0; j<q->size, j++) {
-			
+	int i = 0, j = 0, k = 0, l;
+ 	int size = p->size * q->size; // max size
+ 	int* coefficients = calloc(size, sizeof(int));
+ 	int* exponents = calloc(size, sizeof(int));
+	int coefficient, exponent;
+	while (i<p->size || j<q->size) {
+		exponent = p->exponents[k] + q->exponents[k];
+		coefficient = p->coefficients[k] * q->coefficients[k];
+		for (l=0; l<k; l++) {
+			if (exponents[l] == exponent) {
+				k = l;
+				break;
+			}
 		}
+		exponents[k] = exponent;
+		coefficients[k] += coefficient;
+		if (j<=i)
+			j++;
+		else
+			i++;
 	}
+ 	poly_t* r = malloc(sizeof(poly_t));
+ 	r->coefficients = coefficients;
+ 	r->exponents = exponents;
+ 	r->size = size;
+ 	return r;
 }
 
 void print_poly(poly_t* p) {
