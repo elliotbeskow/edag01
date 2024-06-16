@@ -515,3 +515,55 @@ double intopt(int m, int n, double **a, double *b, double *c, double *x)
 	else
 		return z;
 }
+
+int main(void)
+{
+	int m;
+	int n;
+	double **a;
+	double *b;
+	double *c;
+	scanf("%d %d", &m, &n);
+	a = calloc(m, sizeof(double *));
+	for (int i = 0; i < m; i += 1)
+		a[i] = calloc(n, sizeof(double));
+	b = calloc(m, sizeof(double));
+	c = calloc(n, sizeof(double));
+	for (int i = 0; i < n; i += 1)
+		scanf("%lf", &c[i]);
+	for (int i = 0; i < m; i += 1)
+	{
+		for (int j = 0; j < n; j += 1)
+			scanf("%lf", &a[i][j]);
+	}
+	for (int i = 0; i < m; i += 1)
+		scanf("%lf", &b[i]);
+	printf("LINEAR PROGRAM (m=%d n=%d)\n", m, n);
+	printf("--------------------------\n\n");
+	printf("max z = %lfx_0", c[0]);
+	for (int i = 1; i < n; i += 1)
+		printf(" + %lfx_%d", c[i], i);
+	printf("\n");
+	for (int i = 0; i < m; i += 1)
+	{
+		printf("%lfx_0", a[i][0]);
+		for (int j = 1; j < n; j += 1)
+			printf(" + %lfx_%d", a[i][j], j);
+		printf("<= %lf\n", b[i]);
+	}
+	printf("x_0, ..., x_%d >= 0\n", n - 1);
+	double *x = calloc(n, sizeof(double));
+	for (int i = 0; i < n; i++)
+		x[i] = 0;
+	double y = 0;
+	printf("Solution y=%lf\n", intopt(m, n, a, b, c, x));
+	for (int i = 0; i < n; i++)
+		printf("%lf, ", x[i]);
+	for (int i = 0; i < m; i += 1)
+		free(a[i]);
+	free(a);
+	free(b);
+	free(c);
+	free(x);
+	return 0;
+}
