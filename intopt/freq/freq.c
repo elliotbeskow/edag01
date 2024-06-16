@@ -28,9 +28,8 @@ bool is_prime(int number) {
 
 int main() {
     int n, len, i, size = 0, line = 0;
-    char *str = malloc(sizeof(char) * 1000);
+    char *str = malloc(sizeof(char) * 100);
     word_t *words = calloc(1, sizeof(word_t));
-    // n = scanf("\n");
     while (true) {
         line++;
         bool prime = is_prime(line);
@@ -78,9 +77,8 @@ int main() {
         printf("added %s\n", word);
     };
     int max_count = 0;
-    char *max_word = malloc(1000*sizeof(char));
+    char *max_word = malloc(100*sizeof(char));
     for (i = 0; i < size; i++) {
-        // printf("word: %s, freq: %d\n", words[i].str, words[i].freq);
         if (words[i].freq > max_count) {
             max_count = words[i].freq;
             strcpy(max_word, words[i].str);
