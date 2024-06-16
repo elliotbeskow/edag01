@@ -91,27 +91,6 @@ void free_poly(poly_t* p) {
 	free(p);	
 }
 
-// poly_t* mul(poly_t* a, poly_t* b) {
-// 	int i, j, k, l;
-// 	int size = a->size * b->size; // max size
-// 	int* coefficients = calloc(size, sizeof(int));
-// 	int* exponents = calloc(size, sizeof(int));
-// 	for (i=0; i<a->size; i++)
-// 		for (j=0; j<b->size; j++) {
-// 			k = i*a->size + j;
-// 			int exponent = a->exponents[k] + b->exponents[k];
-// 			int coefficient = a->coefficients[k] * b->coefficients[k];
-// 			for(l=0; l<k; l++) {
-// 				if (exponents[l] == exponent) {
-// 					k = l;
-// 					break;
-// 				}
-// 			}
-// 			exponents[k] = exponent;
-// 			coefficients[k] += coefficient;
-// 		}
-// }
-
 int compare_ints(const void* a, const void* b) {
     return (*(int*)b - *(int*)a);
 }
